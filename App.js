@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { OBSContextProvider,  useObsNav } from './GlobalState';
 import {Picker} from '@react-native-picker/picker';
+import getStories from "./src/core";
 
 function Test() {
   const { reference, goTo, goNext, goPrev } = useObsNav();
@@ -23,6 +24,7 @@ function Test() {
 </>
 }
 
+const _url = "https://git.door43.org/es-419_gl/xsu_obs/archive/master.zip";
 export default function App() {
   return (
     <OBSContextProvider>
@@ -37,8 +39,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
