@@ -1,4 +1,4 @@
-import React, { useState, createContext, useReducer, useContext } from 'react';
+import React, { createContext, useReducer, useContext } from 'react';
 import getStories from "./src/core";
 
 

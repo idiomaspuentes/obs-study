@@ -2,8 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { OBSContextProvider,  useObsNav, useObs } from './GlobalState';
 import {Picker} from '@react-native-picker/picker';
-import getStories from "./src/core";
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 function Test() {
   const { reference, goTo, goNext, goPrev } = useObsNav();
