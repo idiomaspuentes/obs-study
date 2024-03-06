@@ -1,13 +1,22 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
-import { OBSContextProvider,  useObsNav } from './GlobalState';
+import { OBSContextProvider,  useObsNav, useObs } from './GlobalState';
 import {Picker} from '@react-native-picker/picker';
 import getStories from "./src/core";
+import { useState, useEffect } from 'react';
 
 function Test() {
   const { reference, goTo, goNext, goPrev } = useObsNav();
+  const { source, setSrc } = useObs();
+  const _url = "https://git.door43.org/es-419_gl/xsu_obs/archive/master.zip";
 
-  return <>
+  useEffect(() => {
+    setSrc(_url);
+  },[_url]);
+
+  console.log(source);
+
+  return source?<>
       <Text>{`story: ${reference.story} frame: ${reference.frame}`}</Text>
       <Pressable style={styles.button} onPress={goNext}>
           <Text style={styles.text}>NEXT</Text>
@@ -21,10 +30,9 @@ function Test() {
         <Picker.Item label="1" value={1}/>
         <Picker.Item label="2" value={2}/>
       </Picker>
-</>
-}
+</>:null;
+};
 
-const _url = "https://git.door43.org/es-419_gl/xsu_obs/archive/master.zip";
 export default function App() {
   return (
     <OBSContextProvider>
