@@ -3,16 +3,13 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import getStories from "./src/core";
 import { useEffect, useState } from "react";
 import { FileSystem, shareAsync } from "expo";
-import { StyleSheet, Text, View, Pressable } from "react-native";
 import { OBSContextProvider, useObsNav, useObs } from "./GlobalState";
-import { useEffect } from "react";
 
 const _url = "https://git.door43.org/es-419_gl/xsu_obs/archive/master.zip";
 
 function Test() {
   const { reference, goTo, goNext, goPrev } = useObsNav();
   const { source, setSrc } = useObs();
-  const _url = "https://git.door43.org/es-419_gl/xsu_obs/archive/master.zip";
 
   
   useEffect(() => {
