@@ -2,8 +2,11 @@ import { StatusBar } from "expo-status-bar";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import getStories from "./src/core";
 import { useEffect, useState } from "react";
-import { FileSystem, shareAsync } from "expo";
+import { shareAsync } from "expo";
 import { OBSContextProvider, useObsNav, useObs } from "./GlobalState";
+import * as FileSystem from 'expo-file-system';
+import { Platform } from "expo-modules-core";
+import * as MediaLibrary from "expo-media-library";
 
 const _url = "https://git.door43.org/es-419_gl/xsu_obs/archive/master.zip";
 
@@ -18,39 +21,51 @@ function Test() {
   
   
   function download() {
-    console.log("obs", source.stories, JSON.stringify(source.stories));
+  
     const blob = new Blob([JSON.stringify(source.stories)], {
       type: "application/json",
     });
-    //saveAs(blob, "obs.json");
-    saveFile(source.stories, "obs.json", "application/json");
+
+    saveFile(FileSystem.documentDirectory , "obs.json", "application/json", JSON.stringify(source.stories));
   }
 
-  async function saveFile(uri, filename, mimetype) {
+  async function readDirectory() {
+    console.log("readDirectory,");
+    const base64 = await FileSystem.readAsStringAsync("content://com.android.providers.downloads.documents/document");
+    console.log("base64,", base64);
+  }
+
+  async function saveFile(uri, filename, mimetype,fileContent) {
+    console.log("entro a saveFile");
     if (Platform.OS === "android") {
+      console.log("entro a android");
+      console.log("mimetype", mimetype);
       const permissions =
-        await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+      await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
 
       if (permissions.granted) {
-        const base64 = await FileSystem.readAsStringAsync(uri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
+        console.log("entro a granted");
+       
 
         await FileSystem.StorageAccessFramework.createFileAsync(
+      
           permissions.directoryUri,
           filename,
           mimetype
         )
           .then(async (uri) => {
-            await FileSystem.writeAsStringAsync(uri, base64, {
-              encoding: FileSystem.EncodingType.Base64,
+            console.log("emtro a uri")
+            await FileSystem.writeAsStringAsync(uri, fileContent, {
+              encoding: FileSystem.EncodingType.UTF8,
             });
           })
           .catch((e) => console.log(e));
       } else {
+        console.log("entro a else");
         shareAsync(uri);
       }
     } else {
+      console.log("entro a else2");
       shareAsync(uri);
     }
   }
@@ -62,6 +77,9 @@ function Test() {
       <Text>{`story: ${reference.story} frame: ${reference.frame}`}</Text>
       <Pressable style={styles.button} onPress={download}>
       <Text>Guardar</Text>
+      </Pressable>
+      <Pressable style={styles.button} onPress={readDirectory}>
+      <Text>leer</Text>
       </Pressable>
       <Pressable style={styles.button} onPress={goNext}>
         <Text style={styles.text}>NEXT</Text>
