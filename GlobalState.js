@@ -102,7 +102,7 @@ export function useObsNav() {
 
   const {reference} = OBSState;
 
-  const goTo = (story) => {setOBState({ type: 'NAV_TO', payload: story})};
+  const goTo = (story) => {setOBState({ type: 'NAV_TO', payload: parseInt(story)})};
 
   const goNext = () => {setOBState({ type: 'GO_NEXT'})};
 

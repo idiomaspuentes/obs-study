@@ -1,7 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { OBSContextProvider,  useObsNav, useObs } from './GlobalState';
-import {Picker} from '@react-native-picker/picker';
 import { useEffect } from 'react';
 
 function Test() {
@@ -12,8 +11,6 @@ function Test() {
   useEffect(() => {
     setSrc(_url);
   },[_url]);
-
-  console.log(source);
 
   return source?<>
       <Text>{`story: ${reference.story} frame: ${reference.frame}`}</Text>
@@ -27,7 +24,7 @@ function Test() {
       selectedValue={reference.story}
       onValueChange={goTo}>
         <Picker.Item label="1" value={1}/>
-        <Picker.Item label="2" value={2}/>
+        <Picker.Item label="2" value={48}/>
       </Picker>
 </>:null;
 };
