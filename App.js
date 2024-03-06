@@ -3,6 +3,9 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import getStories from "./src/core";
 import { useEffect, useState } from "react";
 import { FileSystem, shareAsync } from "expo";
+import { StyleSheet, Text, View, Pressable } from "react-native";
+import { OBSContextProvider, useObsNav, useObs } from "./GlobalState";
+import { useEffect } from "react";
 
 const _url = "https://git.door43.org/es-419_gl/xsu_obs/archive/master.zip";
 
@@ -14,7 +17,7 @@ function Test() {
   
   useEffect(() => {
     setSrc(_url);
-  },[_url]);
+  }, [_url]);
   
   
   function download() {
@@ -57,25 +60,21 @@ function Test() {
 
   console.log(source);
 
-  return source?<>
+  return source ? (
+    <>
       <Text>{`story: ${reference.story} frame: ${reference.frame}`}</Text>
       <Pressable style={styles.button} onPress={download}>
       <Text>Guardar</Text>
       </Pressable>
       <Pressable style={styles.button} onPress={goNext}>
-          <Text style={styles.text}>NEXT</Text>
+        <Text style={styles.text}>NEXT</Text>
       </Pressable>
       <Pressable style={styles.button} onPress={goPrev}>
-          <Text style={styles.text}>PREV</Text>
+        <Text style={styles.text}>PREV</Text>
       </Pressable>
-      <Picker
-      selectedValue={reference.story}
-      onValueChange={goTo}>
-        <Picker.Item label="1" value={1}/>
-        <Picker.Item label="2" value={2}/>
-      </Picker>
-</>:null;
-};
+    </>
+  ) : null;
+}
 
 export default function App() {
   const [obs, setObs] = useState();
@@ -93,7 +92,6 @@ export default function App() {
       </View>
     </OBSContextProvider>
   );
-
 }
 
 const styles = StyleSheet.create({
