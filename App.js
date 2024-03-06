@@ -20,12 +20,6 @@ function Test() {
       <Pressable style={styles.button} onPress={goPrev}>
           <Text style={styles.text}>PREV</Text>
       </Pressable>
-      <Picker
-      selectedValue={reference.story}
-      onValueChange={goTo}>
-        <Picker.Item label="1" value={1}/>
-        <Picker.Item label="2" value={48}/>
-      </Picker>
 </>:null;
 };
 
