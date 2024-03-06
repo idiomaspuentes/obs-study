@@ -1,9 +1,15 @@
 import { StatusBar } from "expo-status-bar";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import getStories from "./src/core";
 import { useEffect, useState } from "react";
-import { FileSystem, shareAsync } from "expo";
+import { shareAsync } from "expo";
+import * as FileSystem from "expo-file-system";
+
 import { OBSContextProvider, useObsNav, useObs } from "./GlobalState";
+import { ButtonBack } from "./src/components/ButtonBack";
+import { ButtonNext } from "./src/components/ButtonNext";
+import { StoryNav } from "./src/components/StoryNav";
+import { pad } from "./src/core/utils";
 
 const _url = "https://git.door43.org/es-419_gl/xsu_obs/archive/master.zip";
 
@@ -11,13 +17,12 @@ function Test() {
   const { reference, goTo, goNext, goPrev } = useObsNav();
   const { source, setSrc } = useObs();
 
-  
   useEffect(() => {
     setSrc(_url);
   }, [_url]);
-  
-  
+
   function download() {
+    console.log(source.stories);
     console.log("obs", source.stories, JSON.stringify(source.stories));
     const blob = new Blob([JSON.stringify(source.stories)], {
       type: "application/json",
@@ -55,32 +60,40 @@ function Test() {
     }
   }
 
+  // console.log(
+  //   { source },
+  //   source?.stories?.allStories
+  //     ? Object.values(source?.stories?.allStories)
+  //     : "no existe source"
+  // );
   console.log(source);
+
+  console.log(source ? Object.keys(source.stories.allStories) : null);
 
   return source ? (
     <>
+      <StoryNav
+        stories={Object.keys(source.stories?.allStories).map(
+          (stringKey, key) => source.stories.allStories[pad(key + 1)].title
+        )}
+      ></StoryNav>
       <Text>{`story: ${reference.story} frame: ${reference.frame}`}</Text>
       <Pressable style={styles.button} onPress={download}>
-      <Text>Guardar</Text>
+        <Text>Guardar</Text>
       </Pressable>
-      <Pressable style={styles.button} onPress={goNext}>
-        <Text style={styles.text}>NEXT</Text>
-      </Pressable>
-      <Pressable style={styles.button} onPress={goPrev}>
-        <Text style={styles.text}>PREV</Text>
-      </Pressable>
+      <ButtonBack
+        label={"Atras"}
+        style={{ color: "red" }}
+        onPress={goPrev}
+      ></ButtonBack>
+      <ButtonNext label={"Siguiente"} onPress={goNext}></ButtonNext>
     </>
   ) : null;
 }
 
+function Navegacion() {}
+
 export default function App() {
-  const [obs, setObs] = useState();
-
-  useEffect(() => {
-    getStories(_url).then((data) => setObs(data));
-  }, []);
-
-
   return (
     <OBSContextProvider>
       <View style={styles.container}>
