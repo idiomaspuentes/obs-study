@@ -4,8 +4,10 @@ export default function FrameObs({ text, image }) {
   return (
     <View style={styles.frameContainer}>
       {image ? <Image source={image} /> : null}
-      <View style={{ padding: 20 }}>
-        <Text style={{ width: "15%", fontSize: 25 }}>{text}</Text>
+      <View style={{ width: "60%" }}>
+        <View style={{ alignItems: "center" }}>
+          <Text style={{ paddingLeft: 20, paddingBottom: 110, fontSize: 25 }}>{text}</Text>
+        </View>
       </View>
     </View>
   );
