@@ -1,8 +1,8 @@
 import { Picker } from "@react-native-picker/picker";
 
-export function StoryNav({ stories, onSelect }) {
+export function StoryNav({ selectedStory, stories, onSelect }) {
   return (
-    <Picker onValueChange={onSelect}>
+    <Picker selectedValue={selectedStory} onValueChange={onSelect}>
       {stories.map((title, key) => {
         return <Picker.Item label={title} value={key + 1} key={key + 1} />;
       })}

@@ -10,20 +10,29 @@ import { ButtonBack } from "./src/components/ButtonBack";
 import { ButtonNext } from "./src/components/ButtonNext";
 import { StoryNav } from "./src/components/StoryNav";
 import { pad } from "./src/core/utils";
+import FrameObs from "./src/components/FrameObs";
+import { useObsImage } from "./src/hooks/useObsImage";
 
-const _url = "https://git.door43.org/es-419_gl/xsu_obs/archive/master.zip";
+const _url = "https://git.door43.org/es-419_gl/es-419_obs/archive/master.zip";
 
 function Test() {
   const { reference, goTo, goNext, goPrev } = useObsNav();
+  const image = useObsImage({ reference });
   const { source, setSrc } = useObs();
+
+  const getFrameTextFromRef = (reference) => {
+    const story = source.stories.allStories[pad(reference.story)];
+    const frame = story.textosArr[reference.frame - 1];
+    return frame;
+  };
 
   useEffect(() => {
     setSrc(_url);
   }, [_url]);
 
+  console.log({ source });
+
   function download() {
-    console.log(source.stories);
-    console.log("obs", source.stories, JSON.stringify(source.stories));
     const blob = new Blob([JSON.stringify(source.stories)], {
       type: "application/json",
     });
@@ -60,24 +69,16 @@ function Test() {
     }
   }
 
-  // console.log(
-  //   { source },
-  //   source?.stories?.allStories
-  //     ? Object.values(source?.stories?.allStories)
-  //     : "no existe source"
-  // );
-  console.log(source);
-
-  console.log(source ? Object.keys(source.stories.allStories) : null);
-
   return source ? (
     <>
       <StoryNav
+        selectedStory={reference.story}
         stories={Object.keys(source.stories?.allStories).map(
           (stringKey, key) => source.stories.allStories[pad(key + 1)].title
         )}
+        onSelect={goTo}
       ></StoryNav>
-      <Text>{`story: ${reference.story} frame: ${reference.frame}`}</Text>
+      <FrameObs text={getFrameTextFromRef(reference)} image={image}></FrameObs>
       <Pressable style={styles.button} onPress={download}>
         <Text>Guardar</Text>
       </Pressable>
@@ -86,12 +87,11 @@ function Test() {
         style={{ color: "red" }}
         onPress={goPrev}
       ></ButtonBack>
+      <Text>{`story: ${reference.story} frame: ${reference.frame}`}</Text>
       <ButtonNext label={"Siguiente"} onPress={goNext}></ButtonNext>
     </>
   ) : null;
 }
-
-function Navegacion() {}
 
 export default function App() {
   return (

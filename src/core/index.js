@@ -1,11 +1,9 @@
 import JSZipUtils from "jszip-utils";
 import JSZip from "jszip";
 
-export default async function Index(_url) {
+export default async function getStories(_url) {
   let objStories = {};
   const data = await JSZipUtils?.getBinaryContent(_url);
-
-  console.log({ data });
   var zip = new JSZip();
   const response = await zip.loadAsync(data);
   let allStories = {};
@@ -14,7 +12,6 @@ export default async function Index(_url) {
     if (Object.hasOwnProperty.call(zip.files, key)) {
       if (key.match("/manifest")) {
         const yaml = await zip.files[key].async("string");
-        // console.log("yaml", yaml);
         var textarea = yaml.replace(/(\r\n|\n|\r)/gm, ",");
 
         var yamlArr = textarea.split(",");
