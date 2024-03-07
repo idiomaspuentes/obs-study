@@ -1,27 +1,22 @@
 import { StatusBar } from "expo-status-bar";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
-import getStories from "./src/core";
 import { useEffect, useState } from "react";
 import { shareAsync } from "expo";
 import * as FileSystem from "expo-file-system";
 import { OBSContextProvider, useObsNav, useObs } from "./GlobalState";
-import * as MediaLibrary from "expo-media-library";
 
-import { ButtonBack } from "./src/components/ButtonBack";
-import { ButtonNext } from "./src/components/ButtonNext";
 import { StoryNav } from "./src/components/StoryNav";
 import { pad } from "./src/core/utils";
 import FrameObs from "./src/components/FrameObs";
 import { useObsImage } from "./src/hooks/useObsImage";
+import FrameNav from "./src/components/FrameNav";
 
 const _url = "https://git.door43.org/es-419_gl/es-419_obs/archive/master.zip";
 
 function Test() {
-  const { reference, goTo, goNext, goPrev } = useObsNav();
+  const { reference, goTo } = useObsNav();
   const image = useObsImage({ reference });
   const { source, setSrc } = useObs();
-
-  console.log({ image });
 
   const getFrameTextFromRef = (reference) => {
     const story = source.stories.allStories[pad(reference.story)];
@@ -87,9 +82,8 @@ function Test() {
     }
   }
 
-  console.log({ image });
   return source ? (
-    <>
+    <View style={styles.storyContainer}>
       <StoryNav
         selectedStory={reference.story}
         stories={Object.keys(source.stories?.allStories).map(
@@ -104,14 +98,8 @@ function Test() {
       <Pressable style={styles.button} onPress={readDirectory}>
         <Text>leer</Text>
       </Pressable>
-      <ButtonBack
-        label={"Atras"}
-        style={{ color: "red" }}
-        onPress={goPrev}
-      ></ButtonBack>
-      <Text>{`story: ${reference.story} frame: ${reference.frame}`}</Text>
-      <ButtonNext label={"Siguiente"} onPress={goNext}></ButtonNext>
-    </>
+      <FrameNav></FrameNav>
+    </View>
   ) : null;
 }
 
@@ -127,8 +115,10 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  storyContainer: {},
   container: {
-    flex: 1,
+    flex: 0,
+    flexWrap: "wrap",
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
