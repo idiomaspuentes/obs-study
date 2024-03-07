@@ -5,10 +5,8 @@ import { useEffect, useState } from "react";
 import { shareAsync } from "expo";
 import * as FileSystem from "expo-file-system";
 import { OBSContextProvider, useObsNav, useObs } from "./GlobalState";
-import { Platform } from "expo-modules-core";
 import * as MediaLibrary from "expo-media-library";
 
-import { OBSContextProvider, useObsNav, useObs } from "./GlobalState";
 import { ButtonBack } from "./src/components/ButtonBack";
 import { ButtonNext } from "./src/components/ButtonNext";
 import { StoryNav } from "./src/components/StoryNav";
@@ -32,44 +30,46 @@ function Test() {
   useEffect(() => {
     setSrc(_url);
   }, [_url]);
-
-  console.log({ source });
-
+  W;
   function download() {
-  
     const blob = new Blob([JSON.stringify(source.stories)], {
       type: "application/json",
     });
 
-    saveFile(FileSystem.documentDirectory , "obs.json", "application/json", JSON.stringify(source.stories));
+    saveFile(
+      FileSystem.documentDirectory,
+      "obs.json",
+      "application/json",
+      JSON.stringify(source.stories)
+    );
   }
 
   async function readDirectory() {
     console.log("readDirectory,");
-    const base64 = await FileSystem.readAsStringAsync("content://com.android.providers.downloads.documents/document");
+    const base64 = await FileSystem.readAsStringAsync(
+      "content://com.android.providers.downloads.documents/document"
+    );
     console.log("base64,", base64);
   }
 
-  async function saveFile(uri, filename, mimetype,fileContent) {
+  async function saveFile(uri, filename, mimetype, fileContent) {
     console.log("entro a saveFile");
     if (Platform.OS === "android") {
       console.log("entro a android");
       console.log("mimetype", mimetype);
       const permissions =
-      await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+        await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
 
       if (permissions.granted) {
         console.log("entro a granted");
-       
 
         await FileSystem.StorageAccessFramework.createFileAsync(
-      
           permissions.directoryUri,
           filename,
           mimetype
         )
           .then(async (uri) => {
-            console.log("emtro a uri")
+            console.log("emtro a uri");
             await FileSystem.writeAsStringAsync(uri, fileContent, {
               encoding: FileSystem.EncodingType.UTF8,
             });
@@ -85,6 +85,7 @@ function Test() {
     }
   }
 
+  console.log({ image });
   return source ? (
     <>
       <StoryNav
@@ -96,16 +97,10 @@ function Test() {
       ></StoryNav>
       <FrameObs text={getFrameTextFromRef(reference)} image={image}></FrameObs>
       <Pressable style={styles.button} onPress={download}>
-      <Text>Guardar</Text>
+        <Text>Guardar</Text>
       </Pressable>
       <Pressable style={styles.button} onPress={readDirectory}>
-      <Text>leer</Text>
-      </Pressable>
-      <Pressable style={styles.button} onPress={goNext}>
-        <Text style={styles.text}>NEXT</Text>
-      </Pressable>
-      <Pressable style={styles.button} onPress={goPrev}>
-        <Text style={styles.text}>PREV</Text>
+        <Text>leer</Text>
       </Pressable>
       <ButtonBack
         label={"Atras"}
