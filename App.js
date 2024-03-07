@@ -47,24 +47,51 @@ function Test() {
   async function readDirectory() {
     console.log("readDirectory,");
     const base64 = await FileSystem.readAsStringAsync(
-      "content://com.android.providers.downloads.documents/document"
+      "content://com.android.externalstorage.documents/tree/primary/Download/Prueba/obs.json",
     );
     console.log("base64,", base64);
   }
 
   async function saveFile(uri, filename, mimetype, fileContent) {
     console.log("entro a saveFile");
+    console.log("uri permissions ==>", FileSystem.documentDirectory + 'obs');
+    const props = await FileSystem.getInfoAsync(FileSystem.documentDirectory + 'obs');
+
+    if (props.exists && props.isDirectory) {
+      console.log("carpeta Obs ya existe");
+      console.log("props", props);
+        //return props;
+    }else{
+    console.log("CREAR carpeta Obs ");
+    try {
+      await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'obs', { intermediates: true });
+  } catch (e) {
+      console.info("ERROR", e);
+  }
+  try {
+      const isDir = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory + 'obs');
+      console.info("DIR", isDir);
+  } catch (e) {
+      console.info("ERROR", e);
+  }
+  }
+
+
+
     if (Platform.OS === "android") {
-      console.log("entro a android");
-      console.log("mimetype", mimetype);
-      const permissions =
-        await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+
+      const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync(props.uri);
 
       if (permissions.granted) {
         console.log("entro a granted");
+        console.log("permissions", permissions);
+        
+        const url_default = await FileSystem.getInfoAsync(props.uri)
+        console.log("url_default", url_default.uri);
+        console.log("permissions.directoryUri", permissions.directoryUri);
 
         await FileSystem.StorageAccessFramework.createFileAsync(
-          permissions.directoryUri,
+          permissions.directoryUri, 
           filename,
           mimetype
         )
@@ -83,9 +110,11 @@ function Test() {
       console.log("entro a else2");
       shareAsync(uri);
     }
+    
   }
 
   console.log({ image });
+
   return source ? (
     <>
       <StoryNav
