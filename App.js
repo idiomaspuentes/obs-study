@@ -30,7 +30,7 @@ function Test() {
   useEffect(() => {
     setSrc(_url);
   }, [_url]);
-  W;
+
   function download() {
     const blob = new Blob([JSON.stringify(source.stories)], {
       type: "application/json",
