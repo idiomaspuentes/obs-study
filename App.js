@@ -21,6 +21,8 @@ function Test() {
   const image = useObsImage({ reference });
   const { source, setSrc } = useObs();
 
+  console.log({ image });
+
   const getFrameTextFromRef = (reference) => {
     const story = source.stories.allStories[pad(reference.story)];
     const frame = story.textosArr[reference.frame - 1];
@@ -30,7 +32,7 @@ function Test() {
   useEffect(() => {
     setSrc(_url);
   }, [_url]);
-  W;
+
   function download() {
     const blob = new Blob([JSON.stringify(source.stories)], {
       type: "application/json",
