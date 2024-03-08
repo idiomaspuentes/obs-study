@@ -11,21 +11,30 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
-   
     "android": {
-      "permissions": ["android.permission.MOUNT_UNMOUNT_FILESYSTEMS",
-                      "android.permission.WRITE_EXTERNAL_STORAGE"],
+      "permissions": [
+        "android.permission.MOUNT_UNMOUNT_FILESYSTEMS",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.abelpz.obsstudy"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1e1ff289-4f01-4ba7-a64f-abf053027f25"
+      }
     }
   }
 }
