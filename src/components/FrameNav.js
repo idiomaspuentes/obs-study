@@ -28,22 +28,25 @@ export default function FrameNav() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginBottom: 10,
+    flex: 0,
     borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    borderWidth: 1,
+    borderColor: "red",
     backgroundColor: "#0c0c0c",
     color: "#fff",
+    width: "100%",
+    height: 70,
+    padding: 5,
+    margin: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     alignContent: "center",
-    width: "70%",
   },
   reference: {
     alignSelf: "center",
     color: "#fff",
+    fontSize: 20,
   },
   backButton: {
     verticalAlign: "middle",
