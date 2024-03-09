@@ -1,6 +1,7 @@
 import JSZipUtils from "jszip-utils";
 import JSZip from "jszip";
 import { parse } from "yaml";
+import { warn } from "./utils";
 
 export const fetchStories = async (owner, languageCode) => {
   console.log("Loading stories from internet");
@@ -32,8 +33,8 @@ export const getLatestRelease = async (owner, languageCode) => {
   const latestRelease = await (
     await fetch(
       `https://git.door43.org/api/v1/repos/${owner}/${languageCode}_obs/releases/latest`
-    )
-  ).json();
+    ).catch((e) => warn(e))
+  )?.json();
   return latestRelease;
 };
 
@@ -41,8 +42,8 @@ export const getLatestVersion = async (owner, languageCode, tagName) => {
   const latestManifest = await (
     await fetch(
       `https://git.door43.org/api/v1/repos/${owner}/${languageCode}_obs/raw/manifest.yaml?ref=${tagName}`
-    )
-  ).text();
+    ).catch((e) => warn(e))
+  )?.text();
 
   const latestVersion = getVersionFromYamlManifest(latestManifest);
 

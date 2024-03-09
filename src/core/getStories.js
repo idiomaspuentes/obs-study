@@ -5,26 +5,33 @@ import {
 } from "./fetchStories";
 import * as FileSystem from "expo-file-system";
 import { compareVersions } from "compare-versions";
+import { warn } from "./utils";
 
 export async function getStories(owner, languageCode) {
-  if (!FileSystem.documentDirectory) return fetchStories(owner, languageCode);
+  if (!FileSystem.documentDirectory) {
+    warn("No Filesystem detected");
+    return fetchStories(owner, languageCode);
+  }
 
+  warn("Getting local stories");
   const localStories = await getLocalStories(owner, languageCode);
 
   if (!localStories) {
-    console.log("There are no local stories");
+    warn("There are no local stories, downloading stories to filesystem");
     return await storeStories(owner, languageCode);
   }
 
   if (!localStories.stories) {
-    console.log("Current object has an old structure");
+    warn(
+      "Current object has an old structure, downloading new stories to filesystem"
+    );
     return await storeStories(owner, languageCode);
   }
 
   const latestRelease = await getLatestRelease(owner, languageCode);
 
   if (!latestRelease) {
-    console.log("There is no internet");
+    warn("There is no internet, using local stories");
     return localStories;
   }
 
@@ -37,10 +44,12 @@ export async function getStories(owner, languageCode) {
   console.log({ latestVersion, currentVersion: localStories.version });
 
   if (compareVersions(latestVersion, localStories.version) === 1) {
-    console.log("There is a new version on the server");
+    warn(
+      "There is a new version on the server, downloading new version to filesystem"
+    );
     return await storeStories(owner, languageCode);
   }
-  console.log("Latest version on system");
+  warn("Latest version on system, loading stories from filesystem");
   return localStories;
 }
 
@@ -50,12 +59,6 @@ async function getLocalStories(owner, languageCode) {
 
   const dirUri = FileSystem.documentDirectory + directoryName;
   const fileUri = dirUri + "/" + filename;
-
-  console.log(
-    "FILE_URI_COM ==>",
-    await FileSystem.getContentUriAsync(fileUri),
-    fileUri
-  );
 
   const storedStory = await FileSystem.readAsStringAsync(fileUri)
     .then((content) => {
@@ -76,25 +79,36 @@ async function storeStories(owner, languageCode) {
   const dirUri = FileSystem.documentDirectory + directoryName;
   const fileUri = dirUri + "/" + filename;
 
+  console.log({ dirUri });
+
   const doesUriExists = async (uri) =>
     (await FileSystem.getInfoAsync(uri)).exists;
 
-  if (!doesUriExists(dirUri))
+  if (!(await doesUriExists(dirUri)))
     await FileSystem.makeDirectoryAsync(dirUri, {
       intermediates: true,
-    });
+    }).catch((e) => console.log(e));
 
-  console.log("Storing stories in file system");
-  await FileSystem.writeAsStringAsync(fileUri, JSON.stringify(stories));
-
-  const storedStory = await FileSystem.readAsStringAsync(fileUri).then(
-    (content) => {
-      return JSON.parse(content);
-    }
+  warn("Storing stories in file system");
+  await FileSystem.writeAsStringAsync(fileUri, JSON.stringify(stories)).catch(
+    (e) => console.log(e)
   );
+
+  console.log(
+    "FILE_URI_COM ==>",
+    await FileSystem.getContentUriAsync(fileUri).catch((e) => console.log(e)),
+    fileUri
+  );
+
+  const storedStory = await FileSystem.readAsStringAsync(fileUri)
+    .then((content) => {
+      return JSON.parse(content);
+    })
+    .catch((e) => console.log(e));
   if (storedStory) {
     return storedStory;
   } else {
-    throw new Error("No stored story found.");
+    warn("No stored story found.");
+    return stories;
   }
 }
