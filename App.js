@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { useEffect } from "react";
 import { OBSContextProvider, useObsNav, useObs } from "./GlobalState";
 
-// import { StoryNav } from "./src/components/StoryNav";
+import { StoryNav } from "./src/components/StoryNav";
 import { pad } from "./src/core/utils";
 import FrameObs from "./src/components/FrameObs";
 import { useObsImage } from "./src/hooks/useObsImage";
@@ -26,13 +26,13 @@ function Test() {
 
   return source ? (
     <View style={styles.storyContainer}>
-      {/* <StoryNav
+      <StoryNav
         selectedStory={reference.story}
         stories={Object.keys(source.stories).map(
           (stringKey, key) => source.stories[pad(key + 1)].title
         )}
         onSelect={goTo}
-      ></StoryNav> */}
+      ></StoryNav>
       <FrameObs text={getFrameTextFromRef(reference)} image={image}></FrameObs>
       <FrameNav></FrameNav>
     </View>
