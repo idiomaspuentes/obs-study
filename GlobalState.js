@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useContext } from "react";
-import getStories from "./src/core";
 import { pad } from "./src/core/utils";
+import { getStories } from "./src/core/getStories";
 
 export const OBSContext = createContext();
 
@@ -13,29 +13,24 @@ const initialState = {
 };
 
 function doesNextFrameExist(obs, reference) {
-  return !!obs?.stories?.allStories[pad(reference.story)]?.textosArr[
-    reference.frame + 1
-  ];
+  return !!obs?.stories?.[pad(reference.story)]?.frames[reference.frame + 1];
 }
 
 function doesNextStoryExist(obs, reference) {
-  return !!obs?.stories?.allStories[pad(reference.story + 1)];
+  return !!obs?.stories?.[pad(reference.story + 1)];
 }
 
 function doesPrevFrameExist(obs, reference) {
-  return !!obs?.stories?.allStories[pad(reference.story)]?.textosArr[
-    reference.frame - 1
-  ];
+  return !!obs?.stories?.[pad(reference.story)]?.frames[reference.frame - 1];
 }
 
 function doesPrevStoryExist(obs, reference) {
-  return !!obs?.stories?.allStories[pad(reference.story - 1)];
+  return !!obs?.stories?.[pad(reference.story - 1)];
 }
 
 function obtainLastFrame(obs, reference) {
   return (
-    Object.keys(obs?.stories?.allStories[pad(reference.story - 1)]?.textosArr)
-      .length - 1
+    Object.keys(obs?.stories?.[pad(reference.story - 1)]?.frames).length - 1
   );
 }
 
@@ -135,9 +130,9 @@ export function useObs() {
   const { OBSState, setOBState } = useContext(OBSContext);
 
   const { OBS: source } = OBSState;
-  const setSrc = (url) => {
-    getStories(url).then((stories) => {
-      setOBState({ type: "SET_OBS", payload: stories });
+  const setSrc = () => {
+    getStories("es-419_gl", "xsu").then((obs) => {
+      setOBState({ type: "SET_OBS", payload: obs });
     });
   };
   return { source, setSrc };

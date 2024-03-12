@@ -1,31 +1,54 @@
-import { Text, Image, StyleSheet, View } from "react-native";
+import { Text, Image, StyleSheet, View, ScrollView } from "react-native";
 
 export default function FrameObs({ text, image }) {
   return (
     <View style={styles.frameContainer}>
-      {image ? <Image source={image} /> : null}
-      <View style={{ padding: 20 }}>
-        <Text style={{ width: "15%", fontSize: 25 }}>{text}</Text>
-      </View>
+        {image ? <Image source={image} style={styles.image} /> : null}
+        <View style={{ flex: 0, marginVertical: 20 }}>
+          <View
+            style={{ flexDirection: 'column', height: "100%", width: 350, paddingBottom: 215, paddingLeft: 10 }}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+              <Text
+                style={{
+                  fontSize: 25,
+                  color: 'black'
+                }}>
+                {text}
+              </Text>
+            </ScrollView>
+          </View>
+        </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  frameContainer: { flex: 10, padding: 0, justifyContent: "center" },
+  frameContainer: { 
+   flex: 1,
+   margin: 10,
+   flexWrap: "wrap",
+   flexDirection: "row",
+  },
   text: {
-    flex: 1,
     fontSize: 25,
-    padding: 10,
+    paddingBottom: 20,
+    flexShrink: 1,
   },
   imageContainer: {
-    flex: 1,
-    paddingTop: 58,
+    justifyContent: "center",
+    minWidth: 320,
+    minHeight: 440,
     color: "#fff",
   },
+  textContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
   image: {
-    width: 320,
-    height: 440,
-    borderRadius: 18,
+    resizeMode: 'contain',
+    height: "38%",
+    width: "100%",
+    paddingBottom: 0,
   },
 });
