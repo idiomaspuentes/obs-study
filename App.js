@@ -53,10 +53,15 @@ export default function App() {
 const styles = StyleSheet.create({
   storyContainer: {},
   container: {
-    flex: 0,
+    width: '100%',
+    height: '30%',
+    margin: "2%",
+    flex: 1,
+    alignItems: "stretch",
+    flexDirection: 'column',
     flexWrap: "wrap",
     backgroundColor: "#fff",
-    alignItems: "center",
     justifyContent: "center",
+    resizeMode: 'contain',
   },
 });

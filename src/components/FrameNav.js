@@ -8,7 +8,7 @@ export default function FrameNav() {
   const { reference, goNext, goPrev } = useObsNav();
 
   return (
-    <View style={styles.container}>
+    <View>
       <ButtonBack
         label={""}
         style={{ ...styles.backButton }}

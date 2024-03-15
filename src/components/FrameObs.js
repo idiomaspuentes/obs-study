@@ -2,17 +2,14 @@ import { Text, Image, StyleSheet, View, ScrollView } from "react-native";
 
 export default function FrameObs({ text, image }) {
   return (
-    <View style={styles.frameContainer}>
-        {image ? <Image source={image} style={styles.image} /> : null}
-        <View style={{ flex: 0, marginVertical: 20 }}>
+    <View>
+        
+        <View>
           <View
-            style={{ flexDirection: 'column', height: "100%", width: 350, paddingBottom: 215, paddingLeft: 10 }}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-              <Text
-                style={{
-                  fontSize: 25,
-                  color: 'black'
-                }}>
+            style={{}}>
+            <ScrollView contentContainerStyle=''>
+             {image ? <Image styles={styles.image} source={image} /> : null}
+              <Text styles={{ fontSize: 28 }} >
                 {text}
               </Text>
             </ScrollView>
