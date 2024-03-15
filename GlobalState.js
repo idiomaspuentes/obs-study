@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useContext } from "react";
+import React, { createContext, useReducer, useContext, useEffect } from "react";
 import { pad } from "./src/core/utils";
 import { getStories } from "./src/core/getStories";
 
@@ -110,6 +110,16 @@ export function useObsNav() {
   const { OBSState, setOBState } = useContext(OBSContext);
 
   const { reference } = OBSState;
+
+useEffect(() => {
+  //setear el item del asyngStorage cada que cambie la referencia de la aplicacion
+
+}, [reference]);
+
+useEffect(() => {
+  //setear la referencia una unica vez 
+  //TODO usar funcion gotoFrame
+}, []);
 
   const goTo = (story) => {
     setOBState({ type: "NAV_TO", payload: story });
