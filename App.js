@@ -31,7 +31,7 @@ function Test() {
         stories={Object.keys(source.stories).map(
           (stringKey, key) => source.stories[pad(key + 1)].title
         )}
-        onSelect={(selectedStory) = goTo(selectedStory)}
+        onSelect={(selectedStory) => goTo(selectedStory)}
       ></StoryNav>
       <FrameObs text={getFrameTextFromRef(reference)} image={image}></FrameObs>
       <FrameNav></FrameNav>
