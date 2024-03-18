@@ -8,6 +8,7 @@ import { pad } from "./src/core/utils";
 import FrameObs from "./src/components/FrameObs";
 import { useObsImage } from "./src/hooks/useObsImage";
 import FrameNav from "./src/components/FrameNav";
+import ObsModal from "./src/components/ObsModal";
 
 function Test() {
   const { reference, goTo } = useObsNav();
@@ -33,6 +34,7 @@ function Test() {
         )}
         onSelect={goTo}
       ></StoryNav>
+     {/*  <ObsModal></ObsModal> */}
       <FrameObs text={getFrameTextFromRef(reference)} image={image}></FrameObs>
       <FrameNav></FrameNav>
     </View>
