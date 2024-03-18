@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { OBSContextProvider, useObsNav, useObs } from "./GlobalState";
 
 import { StoryNav } from "./src/components/StoryNav";
@@ -21,9 +21,13 @@ function Test() {
     return frame;
   };
 
+  const [showModal, setModal] = useState(false);
+
   useEffect(() => {
     setSrc();
   }, []);
+
+  console.log(reference);
 
   return source ? (
     <View style={styles.storyContainer}>
@@ -34,9 +38,10 @@ function Test() {
         )}
         onSelect={goTo}
       ></StoryNav>
-     {/*  <ObsModal></ObsModal> */}
       <FrameObs text={getFrameTextFromRef(reference)} image={image}></FrameObs>
       <FrameNav></FrameNav>
+      <ObsModal state={reference} source={source} showModal={showModal} setModal={setModal} setButton={(value) => goTo(value)}></ObsModal>
+      
     </View>
   ) : null;
 }

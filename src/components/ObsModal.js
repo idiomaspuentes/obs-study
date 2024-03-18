@@ -1,32 +1,33 @@
 import { Modal, View, Text, Pressable, StyleSheet } from "react-native";
+import { pad } from "../core/utils";
 
-export default function ObsModal({ text, image }) {
-    let visible = true;
+export default function ObsModal({ state, source, showModal, setModal, setButton}) {
+
     return (
     <View style={styles.centeredView}>
       <Modal
         animationType="slide"
         transparent={true}
-        visible={visible}
+        visible={showModal}
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
-          visible = !visible;
+          setModal(!showModal);
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
+            {source?.stories?.[pad(state.story)]?.frames.map((value, key) => <Pressable key={key} style={[styles.button, styles.buttonClose]} onPress={() => setButton(2, 3)}><Text style={styles.textStyle}>{`${key+1}`}</Text></Pressable>)}
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => visible = !visible}>
-              <Text style={styles.textStyle}>Hide Modal</Text>
+              onPress={() => setModal(!showModal)}>
+              <Text style={styles.textStyle}>Cerrar</Text>
             </Pressable>
           </View>
         </View>
       </Modal>
       <Pressable
         style={[styles.button, styles.buttonOpen]}
-        onPress={() => visible = true}>
-        <Text style={styles.textStyle}>Show Modal</Text>
+        onPress={() => setModal(!showModal)}>
+        <Text style={styles.textStyle}>Buscar frame</Text>
       </Pressable>
     </View>
   );
