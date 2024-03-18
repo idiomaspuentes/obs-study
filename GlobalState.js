@@ -54,14 +54,19 @@ const OBSReducer = (state, action) => {
         return state;
       }
     case "NAV_TO":
-      if (action.payload > 0 && action.payload < 51) {
-        return {
-          ...state,
-          reference: { story: action.payload, frame: 1 },
-        };
-      } else {
-        return state;
-      }
+      const {story, frame} = action.payload;
+      if (!story) {console.error('No se envió un story'); return state;}
+      if (!state.OBS?.stories?.[pad(story)]) {console.error('No se encontró el story especificado'); return state;}
+      if (frame && (!state.OBS?.stories?.[pad(story)]?.frames[frame])){console.error('No se encontró el frame especificado'); return state;}
+      if (!frame){
+      return {
+        ...state,
+        reference: { story, frame: 1 },
+      }} else
+      return {
+      ...state,
+        reference: { story, frame },
+      };
     case "GO_PREV":
       if (
         doesPrevFrameExist(state.OBS, state.reference) &&
@@ -111,8 +116,8 @@ export function useObsNav() {
 
   const { reference } = OBSState;
 
-  const goTo = (story) => {
-    setOBState({ type: "NAV_TO", payload: story });
+  const goTo = (story, frame) => {
+    setOBState({ type: "NAV_TO", payload: {story, frame} });
   };
 
   const goNext = () => {
