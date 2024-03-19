@@ -27,8 +27,6 @@ function Test() {
     setSrc();
   }, []);
 
-  console.log(reference);
-
   return source ? (
     <View style={styles.storyContainer}>
       <StoryNav
@@ -40,7 +38,7 @@ function Test() {
       ></StoryNav>
       <FrameObs text={getFrameTextFromRef(reference)} image={image}></FrameObs>
       <FrameNav></FrameNav>
-      <ObsModal state={reference} source={source} showModal={showModal} setModal={setModal} setButton={(value) => goTo(value)}></ObsModal>
+      <ObsModal reference={reference} source={source} showModal={showModal} setModal={setModal} onNavigate={goTo}></ObsModal>
       
     </View>
   ) : null;
