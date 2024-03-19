@@ -13,7 +13,7 @@ const initialState = {
 };
 
 function doesNextFrameExist(obs, reference) {
-  return !!obs?.stories?.[pad(reference.story)]?.frames[reference.frame + 1];
+  return !!obs?.stories?.[pad(reference.story)]?.frames[reference.frame];
 }
 
 function doesNextStoryExist(obs, reference) {
@@ -21,7 +21,7 @@ function doesNextStoryExist(obs, reference) {
 }
 
 function doesPrevFrameExist(obs, reference) {
-  return !!obs?.stories?.[pad(reference.story)]?.frames[reference.frame - 1];
+  return !!obs?.stories?.[pad(reference.story)]?.frames[reference.frame - 2];
 }
 
 function doesPrevStoryExist(obs, reference) {
@@ -30,7 +30,7 @@ function doesPrevStoryExist(obs, reference) {
 
 function obtainLastFrame(obs, reference) {
   return (
-    Object.keys(obs?.stories?.[pad(reference.story - 1)]?.frames).length - 1
+    Object.keys(obs?.stories?.[pad(reference.story - 1)]?.frames).length
   );
 }
 
@@ -57,7 +57,7 @@ const OBSReducer = (state, action) => {
       const {story, frame} = action.payload;
       if (!story) {console.error('No se envió un story'); return state;}
       if (!state.OBS?.stories?.[pad(story)]) {console.error('No se encontró el story especificado'); return state;}
-      if (frame && (!state.OBS?.stories?.[pad(story)]?.frames[frame])){console.error('No se encontró el frame especificado'); return state;}
+      if (frame && (!state.OBS?.stories?.[pad(story)]?.frames[frame - 1])){console.error('No se encontró el frame especificado'); return state;}
       if (!frame){
       return {
         ...state,
