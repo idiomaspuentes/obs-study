@@ -24,6 +24,7 @@ web-build/
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+.yarn
 
 # macOS
 .DS_Store

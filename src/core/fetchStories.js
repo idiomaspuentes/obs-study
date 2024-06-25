@@ -2,9 +2,10 @@ import JSZipUtils from "jszip-utils";
 import JSZip from "jszip";
 import { parse } from "yaml";
 import { warn } from "./utils";
+import i18n from '../constants/i18n'
 
 export const fetchStories = async (owner, languageCode) => {
-  console.log("Loading stories from internet");
+  console.log(i18n.t("loadingStories"));
   const latestRelease = await getLatestRelease(owner, languageCode);
   const latestVersion = await getLatestVersion(
     owner,
@@ -54,6 +55,7 @@ const getZipFiles = async (url) => {
   const data = await JSZipUtils?.getBinaryContent(url);
   var zip = new JSZip();
   await zip.loadAsync(data);
+  console.log(zip.files)
   return zip.files;
 };
 
