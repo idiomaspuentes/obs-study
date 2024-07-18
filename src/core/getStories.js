@@ -5,33 +5,32 @@ import {
 } from "./fetchStories";
 import * as FileSystem from "expo-file-system";
 import { compareVersions } from "compare-versions";
-import { warn } from "./utils";
+import { warnTranslate } from "./utils";
+import i18n from '../constants/i18n'
 
 export async function getStories(owner, languageCode) {
   if (!FileSystem.documentDirectory) {
-    warn("No Filesystem detected");
+    warnTranslate("noFS");
     return fetchStories(owner, languageCode);
   }
 
-  warn("Getting local stories");
+  warnTranslate("gettingLocalStories");
   const localStories = await getLocalStories(owner, languageCode);
 
   if (!localStories) {
-    warn("There are no local stories, downloading stories to filesystem");
+    warnTranslate("noLocalDownloading");
     return await storeStories(owner, languageCode);
   }
 
   if (!localStories.stories) {
-    warn(
-      "Current object has an old structure, downloading new stories to filesystem"
-    );
+    warnTranslate("oldDownloadingNew");
     return await storeStories(owner, languageCode);
   }
 
   const latestRelease = await getLatestRelease(owner, languageCode);
 
   if (!latestRelease) {
-    warn("There is no internet, using local stories");
+    warnTranslate("noInternetUsingLocal");
     return localStories;
   }
 
@@ -44,12 +43,10 @@ export async function getStories(owner, languageCode) {
   console.log({ latestVersion, currentVersion: localStories.version });
 
   if (compareVersions(latestVersion, localStories.version) === 1) {
-    warn(
-      "There is a new version on the server, downloading new version to filesystem"
-    );
+    warnTranslate("newVersionDetected");
     return await storeStories(owner, languageCode);
   }
-  warn("Latest version on system, loading stories from filesystem");
+  warnTranslate("latestVersionIsLocal");
   return localStories;
 }
 
@@ -72,7 +69,7 @@ async function getLocalStories(owner, languageCode) {
 async function storeStories(owner, languageCode) {
   const stories = await fetchStories(owner, languageCode);
   if (!fetchStories)
-    throw new Error("No internet available to fetch and store stories");
+    throw new Error(i18n.t("noInternet"));
   const directoryName = "obs-study";
   const filename = `${owner}_${languageCode}_obs.json`;
 
@@ -89,7 +86,7 @@ async function storeStories(owner, languageCode) {
       intermediates: true,
     }).catch((e) => console.log(e));
 
-  warn("Storing stories in file system");
+  warnTranslate("storingStoriesOnFS");
   await FileSystem.writeAsStringAsync(fileUri, JSON.stringify(stories)).catch(
     (e) => console.log(e)
   );
@@ -108,7 +105,7 @@ async function storeStories(owner, languageCode) {
   if (storedStory) {
     return storedStory;
   } else {
-    warn("No stored story found.");
+    warnTranslate("noStoredStories");
     return stories;
   }
 }
