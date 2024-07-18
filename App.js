@@ -12,9 +12,10 @@ import FavoriteIcon from "./src/components/FavoriteIcon";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function Test() {
+  const [language,setLanguage] = useState();
+  const { source, setSrc } = useObs({language:"pid", org:"es-419_gl"});
   const { reference, goTo } = useObsNav();
   const image = useObsImage({ reference });
-  const { source, setSrc } = useObs();
   const KEY_FRAME = "favoriteFrame-";
 
   const getFrameTextFromRef = (reference) => {
@@ -25,14 +26,15 @@ function Test() {
 
   const getLikeFrame = async (referenceFrame) => {
     let validateLike = false;
-    const storageData = await AsyncStorage.getItem(KEY_FRAME+referenceFrame.story+referenceFrame.frame);
+    const storageData = await AsyncStorage.getItem(
+      KEY_FRAME + referenceFrame.story + referenceFrame.frame
+    );
     if (storageData !== null) {
       validateLike = true;
     }
     return validateLike;
     //const storageAllData = await AsyncStorage.getAllKeys();
   };
-
 
   useEffect(() => {
     setSrc();
@@ -45,10 +47,10 @@ function Test() {
         stories={Object.keys(source.stories).map(
           (stringKey, key) => source.stories[pad(key + 1)].title
         )}
-        onSelect={goTo}
+        onSelect={(story) => goTo(story)}
       ></StoryNav>
       <FrameObs text={getFrameTextFromRef(reference)} image={image}></FrameObs>
-      <FavoriteIcon reference = {reference} ></FavoriteIcon>
+<FavoriteIcon reference = {reference} ></FavoriteIcon>
       <FrameNav></FrameNav>
     </View>
   ) : null;

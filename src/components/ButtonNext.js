@@ -3,7 +3,7 @@ import { AntDesign } from "@expo/vector-icons";
 
 export function ButtonNext({ label, onPress, style }) {
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onPress} style={{ padding: 20 }}>
       {label ? <Text style={style}>{label}</Text> : null}
       <AntDesign
         name="right"

@@ -32,7 +32,7 @@ export const fetchStories = async (owner, languageCode) => {
 export const getLatestRelease = async (owner, languageCode) => {
   const latestRelease = await (
     await fetch(
-      `https://git.door43.org/api/v1/repos/${owner}/${languageCode}_obs/releases/latest`
+      `https://git.door43.org/api/v1/repos/${owner}/${languageCode}_obs/releases/latest?pre-release=true`
     ).catch((e) => warn(e))
   )?.json();
   return latestRelease;

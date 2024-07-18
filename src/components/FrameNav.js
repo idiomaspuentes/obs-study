@@ -29,9 +29,7 @@ export default function FrameNav() {
 const styles = StyleSheet.create({
   container: {
     flex: 0,
-    borderRadius: 20,
     borderWidth: 1,
-    borderColor: "red",
     backgroundColor: "#0c0c0c",
     color: "#fff",
     width: "100%",

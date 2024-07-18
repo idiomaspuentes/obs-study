@@ -1,6 +1,7 @@
 import React, { createContext, useReducer, useContext, useEffect } from "react";
 import { pad } from "./src/core/utils";
 import { getStories } from "./src/core/getStories";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const OBSContext = createContext();
 
@@ -13,7 +14,7 @@ const initialState = {
 };
 
 function doesNextFrameExist(obs, reference) {
-  return !!obs?.stories?.[pad(reference.story)]?.frames[reference.frame + 1];
+  return !!obs?.stories?.[pad(reference.story)]?.frames[reference.frame];
 }
 
 function doesNextStoryExist(obs, reference) {
@@ -21,7 +22,7 @@ function doesNextStoryExist(obs, reference) {
 }
 
 function doesPrevFrameExist(obs, reference) {
-  return !!obs?.stories?.[pad(reference.story)]?.frames[reference.frame - 1];
+  return !!obs?.stories?.[pad(reference.story)]?.frames[reference.frame - 2];
 }
 
 function doesPrevStoryExist(obs, reference) {
@@ -29,9 +30,7 @@ function doesPrevStoryExist(obs, reference) {
 }
 
 function obtainLastFrame(obs, reference) {
-  return (
-    Object.keys(obs?.stories?.[pad(reference.story - 1)]?.frames).length - 1
-  );
+  return Object.keys(obs?.stories?.[pad(reference.story - 1)]?.frames).length;
 }
 
 const OBSReducer = (state, action) => {
@@ -54,14 +53,23 @@ const OBSReducer = (state, action) => {
         return state;
       }
     case "NAV_TO":
-      if (action.payload > 0 && action.payload < 51) {
-        return {
-          ...state,
-          reference: { story: action.payload, frame: 1 },
-        };
-      } else {
+      const {story, frame} = action.payload;
+      if (!story) {console.error('No se envió un story'); return state;}
+      if (!state.OBS?.stories?.[pad(story)]) {
+        console.error('No se encontró el story especificado');
+        console.log(state.OBS?.stories,pad(story))
         return state;
       }
+      if (frame && (!state.OBS?.stories?.[pad(story)]?.frames[frame])){console.error('No se encontró el frame especificado'); return state;}
+      if (!frame){
+      return {
+        ...state,
+        reference: { story, frame: 1 },
+      }} else
+      return {
+      ...state,
+        reference: { story, frame },
+      };
     case "GO_PREV":
       if (
         doesPrevFrameExist(state.OBS, state.reference) &&
@@ -98,6 +106,39 @@ const OBSReducer = (state, action) => {
 
 export const OBSContextProvider = (props) => {
   const [OBSState, setOBState] = useReducer(OBSReducer, initialState);
+  const {OBS, reference} = OBSState
+
+  const storeReference = async (reference) => { 
+    try {
+      await AsyncStorage.setItem("reference", JSON.stringify(reference));
+    } catch (e) {
+      console.error(`Error storing reference ${reference}`, e);
+      return null
+    }
+    return true
+  }
+  const getReference = async () => { 
+    try {
+      const value = await AsyncStorage.getItem("reference");
+      if(value !== null) {
+        return JSON.parse(value);
+      }
+    } catch(e) {
+      console.error(`Error getting reference`, e);
+    }
+  }
+  useEffect(() => {
+    console.log("SETTING INITIAL REFERENCE", reference);
+    if(OBS?.stories) getReference().then((reference) => {
+      console.log({ reference });
+      if (reference) setOBState({ type: "NAV_TO", payload: reference });
+    });
+  }, [OBS]);
+
+  useEffect(() => {
+    console.log("SETTING CURRENT REFERENCE", reference);
+    if(OBS?.stories) storeReference(reference);
+  }, [OBS,reference]);
 
   return (
     <OBSContext.Provider value={{ OBSState, setOBState }}>
@@ -108,21 +149,10 @@ export const OBSContextProvider = (props) => {
 
 export function useObsNav() {
   const { OBSState, setOBState } = useContext(OBSContext);
+  const { reference, OBS } = OBSState;
 
-  const { reference } = OBSState;
-
-useEffect(() => {
-  //setear el item del asyngStorage cada que cambie la referencia de la aplicacion
-
-}, [reference]);
-
-useEffect(() => {
-  //setear la referencia una unica vez 
-  //TODO usar funcion gotoFrame
-}, []);
-
-  const goTo = (story) => {
-    setOBState({ type: "NAV_TO", payload: story });
+  const goTo = (story, frame) => {
+    setOBState({ type: "NAV_TO", payload: {story,frame} });
   };
 
   const goNext = () => {
@@ -136,12 +166,14 @@ useEffect(() => {
   return { reference, goTo, goNext, goPrev };
 }
 
-export function useObs() {
+export function useObs({org, language}) {
   const { OBSState, setOBState } = useContext(OBSContext);
+
+
 
   const { OBS: source } = OBSState;
   const setSrc = () => {
-    getStories("es-419_gl", "xsu").then((obs) => {
+      getStories(org, language).then((obs) => {
       setOBState({ type: "SET_OBS", payload: obs });
     });
   };
